@@ -29,9 +29,10 @@ python -m unittest discover -s tests -v
 python -m unittest discover -s examples/config-validation -p 'test_*.py' -v
 python examples/config-validation/run_demo.py
 (cd experiments/config-agent-b && python -m unittest discover -s tests -p 'test_*.py' -v)
+python -m unittest discover -s experiments/blind-discovery -p 'test_*.py' -v
 ```
 
-예상 결과: 지식 1건 검증, 핵심 테스트 21개, 설정 예제 테스트 5개, Agent B가 남긴 r2 코드 테스트 5개 통과. 테스트는 과거 Agent가 작성한 코드를 실행하며, Agent를 새로 호출하는 것은 아닙니다. 원본 지식의 GitHub 근거 커밋을 추가 확인하려면 `python scripts/validate.py knowledge --verify-remote`를 실행합니다.
+예상 결과: 지식 1건 검증, 핵심 테스트 21개, 설정 예제 테스트 5개, Agent B가 남긴 r2 코드 테스트 5개, 추가 검색 실험 테스트 5개 통과. 테스트는 과거 Agent가 작성한 코드를 실행하며, Agent를 새로 호출하는 것은 아닙니다. 원본 지식의 GitHub 근거 커밋을 추가 확인하려면 `python scripts/validate.py knowledge --verify-remote`를 실행합니다.
 
 ## 실제로 확인한 흐름
 
@@ -51,7 +52,7 @@ python examples/config-validation/run_demo.py
 - [r2 코드·테스트 근거 커밋](https://github.com/5jyan/team-agent-knowledge/commit/f712c83919e17bfcbd9de099b0deef00c54ecaee)
 - [설계](docs/DESIGN.md) · [실제 검증 기록](docs/EVIDENCE.md) · [AI 활용 내역](docs/AI_USAGE.md)
 - [상세 HTML 보고서](docs/report.html): GitHub에서 파일을 내려받아 브라우저로 열어 주세요. 화면 캡처가 파일 안에 포함돼 있습니다.
-- [Agent 실행 기록](experiments/config-agent-b/) · [Agent 요청 발췌와 전문](prompts/)
+- [Agent 실행 기록](experiments/config-agent-b/) · [추가 검색 실험](experiments/blind-discovery/) · [개인 Bank 추가 실험](experiments/personal-bank/) · [Agent 요청 발췌와 전문](prompts/)
 
 여기 포함된 Skill은 원래 스킬을 **이 제출용 저장소 구조에 맞게 수정한 사본**입니다. 과거 PR #5에서 실제 실행한 스킬은 원본 저장소와 원래 스킬 구조를 대상으로 했습니다. 실제 프롬프트 중 이전 사례 관련 문장 두 개는 제출용 발췌에서 생략했다고 표시했습니다.
 
@@ -67,3 +68,14 @@ python scripts/reconcile.py --snapshot-commit "$(git rev-parse main)"
 ```
 
 Publisher는 로컬 및 원격의 최신 `main`이 일치하고 추적 파일에 변경이 없는지 확인합니다. 기본 Bank는 `team-knowledge-showcase`입니다. 이전 실험 Bank `team-compiler`와 이름을 분리했으며 서버 측 접근 권한 분리를 의미하지 않습니다. 같은 ID라도 다른 저장소가 관리하는 문서는 덮어쓰지 않습니다. API 인증 헤더, 여러 컴퓨터의 분산 잠금과 머지 후 자동 게시는 구현하지 않았습니다.
+
+## 동일 입력으로 r1·r2 비교
+
+실제 과거 원본 저장소의 두 커밋에서 코드 파일을 읽어 같은 입력으로 실행합니다. 임의의 Git 코드를 실행하므로 신뢰하는 원본 checkout에만 사용하세요.
+
+```bash
+git clone https://github.com/5jyan/team-agent-knowledge.git ../team-agent-knowledge
+python experiments/revision-comparison/compare.py ../team-agent-knowledge
+```
+
+r1은 당시 model만 필수였던 예제입니다. r2에서 version을 추가한 요구사항 변화이며, r1이 당시부터 잘못됐다는 뜻은 아닙니다.
