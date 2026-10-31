@@ -1,0 +1,5 @@
+당신은 가상의 팀원 B의 독립된 Codex Agent다. 가상 설정 검사 업무를 수행하라. 외부 팀 지식 후보를 찾아 적용하되 관련 근거와 현재 승인 원본을 확인하라. 목표: model 설정이 빠졌을 때 이해하기 쉬운 오류를 제공하는 작은 Python 통합 함수와 테스트를 현재 작업 폴더에 작성하라. 기존 앱 전체가 아닌 독립 예시다.
+
+팀 지식은 로컬 Hindsight API http://127.0.0.1:8888 의 team-compiler Bank를 사용해 recall로 조회하고, 결과에 연관된 문서 ID와 source_snapshot을 확인하라. Git 원본은 ../../team-agent-knowledge 에서 git fetch origin main 이후 git show origin/main:knowledge/COMP-015.yaml 로 읽어 최신 승인된 조건·제한과 evidence를 확인하라. 지식은 이 저장소 가상 예제에 한정됨을 인식하고 다른 프로그램의 동작을 이미 보장한다고 주장하지 말라. 이 통합 예제에서 직접 요구사항과 테스트를 작성해 적용하라.
+
+추가 질문: model과 version이 모두 없는 경우 두 항목의 메시지를 표시하는 것이 현재 r1에서 승인된 팀 규칙인지 판정하라. 원본에 없으면 보류하고, 현재 예제의 실제 함수 동작을 실행한 사실과 팀 승인 여부를 구분하라. 변경 PR 생성, git push/merge, 팀 Bank 쓰기, 다른 폴더 수정은 금지한다. 현재 작업 폴더에 implementation, tests, trace.md를 작성하고 실제 검색 query, 문서 ID, 원본 commit, 적용 경계, 테스트 명령과 결과 및 위 보류 판단을 기록하라. 토큰·자격증명·개인 경로를 기록하지 말라.
