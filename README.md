@@ -32,7 +32,7 @@ python examples/config-validation/run_demo.py
 python -m unittest discover -s experiments/blind-discovery -p 'test_*.py' -v
 ```
 
-예상 결과: 지식 1건 검증, 핵심 테스트 21개, 설정 예제 테스트 5개, Agent B가 남긴 r2 코드 테스트 5개, 추가 검색 실험 테스트 5개 통과. 테스트는 과거 Agent가 작성한 코드를 실행하며, Agent를 새로 호출하는 것은 아닙니다. 원본 지식의 GitHub 근거 커밋을 추가 확인하려면 `python scripts/validate.py knowledge --verify-remote`를 실행합니다.
+예상 결과: 지식 1건 검증, 핵심 테스트 21개, 설정 예제 테스트 5개, Agent B가 남긴 r2 코드 테스트 5개, 추가 검색 실험 테스트 5개 통과. 각 테스트는 서로 다른 코드·검증 단위를 확인하며, 전부 독립적인 종단 간 검증은 아닙니다. Agent 코드를 실행하는 테스트는 과거에 작성된 코드를 검증하며 Agent를 새로 호출하는 것은 아닙니다. 원본 지식의 GitHub 근거 커밋을 추가 확인하려면 `python scripts/validate.py knowledge --verify-remote`를 실행합니다.
 
 ## 실제로 확인한 흐름
 
