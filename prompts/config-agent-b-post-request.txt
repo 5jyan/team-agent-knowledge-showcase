@@ -1,5 +1,7 @@
+[제출용 사본] 실제 요청 또는 실행 기록의 버전 이름을 v1·v2로 바꾼 기록입니다. 과거 원문과 문자 단위로 동일하지 않으며, 원본은 연결된 GitHub 저장소의 기록을 확인하세요.
+
 가상의 팀원 B를 이어서 수행하라. 이전 실행의 판단과 코드가 현재 폴더 trace.md, implementation/config_checker.py, tests/에 있다. 이것은 새 Codex 세션이므로 이전 대화가 자동으로 보존됐다고 주장하지 말고 그 기록을 읽어라.
 
-Hindsight 로컬 team-compiler Bank에 model과 version의 동시 누락 처리에 대해 새로 recall하고 관련 문서 ID, source_snapshot과 내용을 확인하라. Git에서 ../../team-agent-knowledge 의 최신 origin/main을 fetch 후 COMP-015 YAML을 읽고 revision, 적용 범위, 근거와 일치하는지 확인하라. 자신의 기존 코드가 r1 이후 그대로인지, 두 키가 없을 때와 한 키가 없을 때 무엇을 반환하는지 테스트·확인하라. 이전 trace와 대비해 승인된 팀 지식으로 어떤 판단이 변경됐는지 근거를 제시하고, 변경이 있다면 현재 폴더에 한정해 이전 코드를 새 규칙에 맞게 개선하고 테스트를 실행하라. 실제 확인한 것만 기록하고 다른 사람 계정이나 실제 제품 동작으로 일반화하지 말라.
+Hindsight 로컬 team-compiler Bank에 model과 version의 동시 누락 처리에 대해 새로 recall하고 관련 문서 ID, source_snapshot과 내용을 확인하라. Git에서 ../../team-agent-knowledge 의 최신 origin/main을 fetch 후 COMP-015 YAML을 읽고 revision, 적용 범위, 근거와 일치하는지 확인하라. 자신의 기존 코드가 v1 이후 그대로인지, 두 키가 없을 때와 한 키가 없을 때 무엇을 반환하는지 테스트·확인하라. 이전 trace와 대비해 승인된 팀 지식으로 어떤 판단이 변경됐는지 근거를 제시하고, 변경이 있다면 현재 폴더에 한정해 이전 코드를 새 규칙에 맞게 개선하고 테스트를 실행하라. 실제 확인한 것만 기록하고 다른 사람 계정이나 실제 제품 동작으로 일반화하지 말라.
 
 현재 폴더에 post-update-trace.md를 기록하라. 지식 저장소나 Hindsight를 수정하지 말고 PR도 생성하지 말라. 인증 정보, 개인 경로 등 민감한 내용은 결과에 포함하지 말라.
