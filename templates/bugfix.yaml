@@ -4,7 +4,7 @@ type: bugfix
 id: COMP-001
 status: active
 title: "Illustrative title (replace before committing)"
-revision: r1
+revision: v1
 summary: "One sentence describing the reusable compiler knowledge."
 problem:
   statement: "What failed or was unexpectedly difficult?"
