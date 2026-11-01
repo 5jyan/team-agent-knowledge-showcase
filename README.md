@@ -2,6 +2,8 @@
 
 팀원 A와 Agent가 확인한 개선을 Git에서 검토한 후 Hindsight에 게시하고, B의 Agent가 이를 검색·활용·갱신하는 프로토타입입니다. **Git YAML이 지식 원본**이고, Hindsight는 검색용 저장소입니다.
 
+> **설계 의사결정:** Hindsight의 Bank·Recall·문서 API를 재사용하고, 팀 지식 후보 분류·근거 검증·PR 승인·게시·갱신 정책을 추가했습니다. [요구사항별 판단 및 구현 범위](docs/DESIGN.md#과제-요구사항에서-기능을-도출한-이유)에 기존 기능과 직접 구현한 기능을 비교했습니다.
+
 > **버전 표기 안내:** 이 제출용 저장소와 ZIP은 지식과 실행 기록의 버전 이름을 `v1`·`v2`로 통일한 제출용 사본입니다. 실제 GitHub·Hindsight의 과거 원본은 바꾸지 않았으므로 버전 필드와 실행 로그가 이 사본과 다를 수 있습니다. 과거 프롬프트와 실행 기록은 표기를 치환한 사본이며, 실제 원문은 링크한 저장소에서 확인할 수 있습니다. 과거 실험을 수행한 원본 저장소의 이력은 그대로 유지합니다.
 
 ## 예제: 설정 오류 메시지
@@ -18,7 +20,7 @@
 
 ## 처음 실행하기
 
-macOS/Linux 셸, Python 3.12, 패키지 설치를 위한 인터넷 연결이 필요합니다. ZIP을 압축 해제하고 `team-agent-knowledge-showcase` 폴더에서 다음 명령을 실행합니다. Hindsight나 GitHub 인증은 필요하지 않습니다.
+macOS/Linux 셸, Python 3.12, 패키지 설치를 위한 인터넷 연결이 필요합니다. **이 절은 ZIP 압축 해제본에서도 실행 가능한 코드 테스트 경로(A)**입니다. `team-agent-knowledge-showcase` 폴더에서 다음 명령을 실행합니다. 이 단계에는 Hindsight나 GitHub 인증이 필요하지 않습니다. **실제 PR·게시 실습(B/C)은 ZIP이 아닌 자신의 GitHub Fork를 clone한 Git 저장소에서 진행**합니다. 상세 명령은 [GitHub 재현 가이드](docs/GITHUB_SETUP.md)를 참고하세요.
 
 ```bash
 python3.12 -m venv .venv
@@ -56,18 +58,26 @@ python -m unittest discover -s experiments/blind-discovery -p 'test_*.py' -v
 
 여기 포함된 Skill은 원래 스킬을 **이 제출용 저장소 구조에 맞게 수정한 사본**입니다. 과거 PR #5에서 실제 실행한 스킬은 원본 저장소와 원래 스킬 구조를 대상으로 했습니다. 실제 프롬프트 중 이전 사례 관련 문장 두 개는 제출용 발췌에서 생략했다고 표시했습니다.
 
-## Hindsight와 수동 게시
+## Hindsight 설치와 수동 게시 — 반드시 Git clone에서 실행
 
-Hindsight API 1.1.0과 LLM 제공자 설정이 필요합니다. 설치는 [Hindsight 공식 안내](https://hindsight.vectorize.io/developer/installation)를 참고하세요. 별도의 로컬 Bank를 만든 후 아래를 실행합니다.
+**ZIP은 Git 이력이 없으므로 `reconcile.py` 게시 대상으로 사용할 수 없습니다.** ZIP으로 코드 테스트(A)를 한 뒤, 실제 게시(C)를 재현하려면 GitHub에서 자신의 **Fork를 clone(B)**하고 그 Git 저장소 루트로 이동하세요. 이미 Fork를 clone한 경우에는 다시 압축 해제본으로 돌아오지 않습니다.
+
+- **B: GitHub 준비 및 PR** — [Fork → Branch → PR → GitHub Actions → 사람 병합](docs/GITHUB_SETUP.md#2-b-경로--개인-fork에서-실제-pr-재현)
+- **C: 로컬 Hindsight 1.1.0** — [Docker 실행, LLM API 키, `/health`, Bank 생성, 게시, Recall](docs/GITHUB_SETUP.md#3-c-경로--hindsight-110-로컬-설치)
+- **자동화 미구현 설계** — [`main` Push → 신뢰된 Publisher → Hindsight REST API](docs/AUTOMATION_DESIGN.md)
+
+Fork 저장소를 clone하고 Hindsight API를 준비한 뒤에는 다음처럼 실행합니다. `<YOUR_GITHUB_ID>`는 자신의 GitHub 계정으로 바꾸고, `team-knowledge-repro`는 평가자 전용으로 새로 만든 Bank입니다.
 
 ```bash
-curl -X PUT http://127.0.0.1:8888/v1/default/banks/team-knowledge-showcase \
-  -H 'Content-Type: application/json' -d '{"name":"team-knowledge-showcase"}'
-python scripts/reconcile.py --snapshot-commit "$(git rev-parse main)" --dry-run
-python scripts/reconcile.py --snapshot-commit "$(git rev-parse main)"
+# 자신의 Fork에서 복제한 Git clone 루트에서만 실행
+git switch main && git fetch origin && git pull --ff-only origin main
+python scripts/reconcile.py --snapshot-commit "$(git rev-parse HEAD)" \
+  --source-repository "<YOUR_GITHUB_ID>/team-agent-knowledge-showcase" \
+  --bank-id team-knowledge-repro --dry-run
+# 위 계획과 API 응답을 확인한 후 --dry-run 없이 동일 명령을 실행
 ```
 
-Publisher는 로컬 및 원격의 최신 `main`이 일치하고 추적 파일에 변경이 없는지 확인합니다. 기본 Bank는 `team-knowledge-showcase`입니다. 이전 실험 Bank `team-compiler`와 이름을 분리했으며 서버 측 접근 권한 분리를 의미하지 않습니다. 같은 ID라도 다른 저장소가 관리하는 문서는 덮어쓰지 않습니다. API 인증 헤더, 여러 컴퓨터의 분산 잠금과 머지 후 자동 게시는 구현하지 않았습니다.
+Bank 이름은 **과거 원본 실험 `team-compiler` / 현재 제출본 `team-knowledge-showcase` / 평가자 실습 `team-knowledge-repro`**로 구분합니다. 로컬 Bank 분리는 서버 측 보안 ACL을 의미하지 않습니다. 지금 구현된 것은 **수동 Publisher**이며, 인증 헤더·분산 잠금·머지 후 자동 게시는 구현하지 않았습니다.
 
 ## 동일 입력으로 v1·v2 비교
 
